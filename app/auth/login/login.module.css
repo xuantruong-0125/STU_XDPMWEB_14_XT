@@ -73,6 +73,7 @@
 @media (max-width:768px){
 
   .loginWrapper{
+    margin-top: -150px;
     flex-direction:column;
     gap:20px;
     width:100%;
@@ -84,6 +85,7 @@
     align-items:center;
     justify-content:center;
     gap:14px;
+
 
     max-width:620px;
     width:90%;

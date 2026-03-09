@@ -108,7 +108,7 @@ export default function RegisterPage(){
 
 
           <p className={styles.tagline}>
-            Tham gia <b>HobbyJapan</b>  để khám phá thế giới Gundam, Figure và các bộ sưu tập độc đáo.
+            Tham gia <b>HobbyJapan</b> để khám phá thế giới Gundam, Figure và các bộ sưu tập độc đáo.
           </p>
 
         </div>
