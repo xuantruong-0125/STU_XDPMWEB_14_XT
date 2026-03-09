@@ -1,22 +1,114 @@
 @import url('https://fonts.googleapis.com/css2?family=Genos:wght@200;400;600&family=Manjari:wght@100;400;700&family=Manrope:wght@200;400;600&display=swap');
-.container{
+/* .container{
   display:flex;
   justify-content:center;
   align-items:center;
   height:100vh;
   background:#101010;
+}*/
+
+
+
+
+.container{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  background:#101010;
 }
 
+/* WRAPPER 2 CỘT */
+
+.loginWrapper{
+  display:flex;
+  align-items:center;
+  gap:80px;
+}
+
+/* LEFT SIDE */
+
+.leftPanel{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  color:white;
+  max-width:300px;
+}
+
+
+.heroImage{
+  width:1000px;
+  margin-top:20px;
+  border-radius:12px;
+  object-fit:cover;
+}
+
+.tagline{
+  margin-top:10px;
+  font-size:16px;
+  color:#ccc;
+  line-height:1.5;
+  font-family: "Manrope", sans-serif;
+}
+
+/* FORM */
+
 .form{
-  width:350px;
+  width:370px;
   padding:30px;
-  border: 2px solid rgb(234, 234, 234);
-  background:rgb(46, 46, 46);
+  border:2px solid rgb(234,234,234);
+  background:rgb(46,46,46);
   border-radius:20px;
   box-shadow:0 5px 20px rgba(0,0,0,0.1);
   display:flex;
   flex-direction:column;
   font-family: "Manrope", sans-serif;
+
+}
+
+/* RESPONSIVE MOBILE */
+
+@media (max-width:768px){
+
+  .loginWrapper{
+    flex-direction:column;
+    gap:20px;
+    width:100%;
+  }
+
+  .leftPanel{
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+
+    max-width:620px;
+    width:90%;
+  }
+
+  .heroImage{
+    width:120px;
+    margin-top:20px;
+    border-radius:12px;
+  }
+
+  .tagline{
+    display:block;           
+    font-size:14px;
+    max-width:280px;
+    color:#ccc;
+    text-align:left;
+    flex:1;
+  }
+
+
+  .form{
+    width:90%;
+    max-width:370px;
+  }
 
 }
 
@@ -40,10 +132,16 @@
 .form button{
   padding:10px;
   border:none;
-  background:#4a6cf7;
-  color:white;
+  background:#867f7f;
+  color:rgb(255, 255, 255);
+  border: 2px solid rgb(234, 234, 234);
+  font-weight: bold;
   border-radius:6px;
   cursor:pointer;
+}
+
+.form button:hover{
+  background: #f49898;
 }
 
 .form p{
@@ -56,6 +154,7 @@
   cursor:pointer;
   margin-left:5px;
 }
+
 
 .inputGroup{
   display:flex;

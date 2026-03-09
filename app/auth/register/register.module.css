@@ -7,16 +7,119 @@
   background:#101010;
 }
 
+.wrapper{
+  display:flex;
+  align-items:center;
+  gap:80px;
+}
+
+.leftPanel{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  color:white;
+  max-width:320px;
+}
+
+.heroImage{
+  margin-top:20px;
+  border-radius:12px;
+}
+
+.tagline{
+  margin-top:20px;
+  font-size:16px;
+  color:#ccc;
+  line-height:1.6;
+  font-family: "Manrope", sans-serif;
+
+}
+
 .form{
   width:500px;
   padding:30px;
-  border: 2px solid rgb(234, 234, 234);
-  background:rgb(46, 46, 46);
-  border-radius:10px;
-  box-shadow:0 5px 20px rgba(0,0,0,0.1);
+  border:2px solid rgb(234,234,234);
+  background:rgb(46,46,46);
+  border-radius:20px;
   display:flex;
   flex-direction:column;
   font-family: "Manrope", sans-serif;
+
+}
+
+/* GRID INPUT */
+
+.formGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+.fullWidth{
+  grid-column:span 2;
+}
+
+/* MOBILE */
+
+@media (max-width:768px){
+
+  .wrapper{
+    flex-direction:column;
+    width:100%;
+    gap:5px; 
+  }
+
+  /* .leftPanel{
+    position:relative;
+    left:0;            /* sát trái 
+    transform:scale(0.85);
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    gap:12px;
+    margin-bottom:10px;
+    align-items:flex-start;
+  } */
+
+  .leftPanel{
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+
+    max-width:620px;
+    width:90%;
+  }
+
+  .heroImage{
+    width:120px;
+    margin-top:20px;
+    border-radius:12px;
+  }
+
+  .tagline{
+    display:block;           
+    font-size:14px;
+    max-width:280px;
+    color:#ccc;
+    text-align:left;
+    flex:1;
+  }
+
+  .form{
+    width:90%;
+    max-width:420px;
+  }
+
+  .formGrid{
+    grid-template-columns:1fr;
+  }
+
+  .fullWidth{
+    grid-column:span 1;
+  }
 
 }
 
@@ -97,3 +200,20 @@ input[type="number"]::-webkit-inner-spin-button {
   margin-top:4px;
 }
 
+
+@media (max-width: 600px){
+
+  .form{
+    width:90%;
+    padding:20px;
+  }
+
+  .formGrid{
+    grid-template-columns: 1fr;
+  }
+
+  .fullWidth{
+    grid-column: span 1;
+  }
+
+}
