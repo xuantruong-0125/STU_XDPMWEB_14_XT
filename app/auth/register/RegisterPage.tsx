@@ -122,7 +122,7 @@ export default function RegisterPage(){
           <div className={styles.formGrid}>
 
             <div className={styles.inputGroup}>
-                <label>Username *</label>
+                <label>Tên người dùng *</label>
                 <input
                 name="username"
                 type="text"
@@ -195,7 +195,7 @@ export default function RegisterPage(){
           <button type="submit">Đăng ký</button>
 
           <p>
-            Đã có tài khoản?
+            Đã có tài khoản? &nbsp;
             <span onClick={()=>router.push("/auth/login")}>
               Đăng nhập
             </span>

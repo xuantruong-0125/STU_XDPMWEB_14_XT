@@ -1,14 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Genos:wght@200;400;600&family=Manjari:wght@100;400;700&family=Manrope:wght@200;400;600&display=swap');
-/* .container{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  background:#101010;
-}*/
-
-
-
 
 .container{
   display:flex;
@@ -24,6 +14,7 @@
   display:flex;
   align-items:center;
   gap:80px;
+
 }
 
 /* LEFT SIDE */
@@ -34,7 +25,7 @@
   align-items:center;
   text-align:center;
   color:white;
-  max-width:300px;
+  max-width:350px;
 }
 
 
@@ -47,7 +38,7 @@
 
 .tagline{
   margin-top:10px;
-  font-size:16px;
+  font-size:20px;
   color:#ccc;
   line-height:1.5;
   font-family: "Manrope", sans-serif;
