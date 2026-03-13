@@ -24,6 +24,8 @@
 
 .logo img {
     height: 90px;
+    flex-shrink:0;
+
 }
 
 .menu {
@@ -50,6 +52,8 @@
 .menuIcon {
     width: 22px;
     height: 22px;
+    flex-shrink:0;
+
 }
 
 .menuText {
@@ -70,6 +74,8 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
+    flex-shrink:0;
+
 }
 
 .username {
