@@ -1,7 +1,7 @@
 import SocialPage from "./SocialPage";
 
 export const metadata = {
-  title: "HobbyJapan | Social",
+  title: "GunVerse | Trang chủ",
   description: "Trang mạng xã hội cho người yêu Gundam và Figure"
 };
 

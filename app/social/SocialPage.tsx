@@ -115,7 +115,7 @@ export default function SocialPage() {
     return (
         <div className={styles.container}>
            <Navbar user={user}/>
-            <h1 className={styles.title}>HobbyJapan Social</h1>
+            <h1 className={styles.title}></h1>
 
             <div className={styles.feed}>
                 {posts.map((post) => (
@@ -194,7 +194,7 @@ export default function SocialPage() {
                                 className={styles.actionItem}  
                                 onClick={() => handleLike(post.id)}
                             >
-                                <img src="/icons/liked.png" className={styles.icon} />
+                                <img src="/icons/like.png" className={styles.icon} />
                                 {post.likes > 0 && <span>{post.likes}</span>}
                             </div>
 

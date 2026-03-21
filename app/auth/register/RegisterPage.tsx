@@ -13,7 +13,7 @@ export default function RegisterPage(){
     username:"",
     email:"",
     password:"",
-    confirmPassword:"",
+    password_confirmation:"",
     phone:"",
     address:"",
     avatar:null as File | null
@@ -23,7 +23,7 @@ export default function RegisterPage(){
     username:"",
     email:"",
     password:"",
-    confirmPassword:""
+    password_confirmation:""
   });
 
   const validate = () => {
@@ -31,7 +31,7 @@ export default function RegisterPage(){
         username:"",
         email:"",
         password:"",
-        confirmPassword:""
+        password_confirmation:""
     };
 
     let isValid = true;
@@ -51,13 +51,13 @@ export default function RegisterPage(){
         isValid = false;
     }
 
-    if(!form.confirmPassword.trim()){
-        newErrors.confirmPassword = "Vui lòng xác nhận mật khẩu";
+    if(!form.password_confirmation.trim()){
+        newErrors.password_confirmation = "Vui lòng xác nhận mật khẩu";
         isValid = false;
     }
 
-    if(form.password && form.confirmPassword && form.password !== form.confirmPassword){
-        newErrors.confirmPassword = "Mật khẩu không khớp";
+    if(form.password && form.password_confirmation && form.password !== form.password_confirmation){
+        newErrors.password_confirmation = "Mật khẩu không khớp";
         isValid = false;
     }
 
@@ -66,11 +66,13 @@ export default function RegisterPage(){
     return isValid;
   };
 
-  const handleChange = (e:React.ChangeEvent<HTMLInputElement>)=>{
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const handleFile = (e:React.ChangeEvent<HTMLInputElement>)=>{
@@ -82,14 +84,49 @@ export default function RegisterPage(){
     }
   };
 
-  const handleSubmit = (e:React.FormEvent)=>{
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if(!validate()){
-        return;
-    }
+    if (!validate()) return;
 
-    console.log(form);
+    try {
+      const formData = new FormData();
+
+      formData.append("username", form.username);
+      formData.append("email", form.email);
+      formData.append("password", form.password);
+      formData.append("password_confirmation", form.password_confirmation); // 🔥 Laravel cần field này
+      formData.append("phone", form.phone);
+      formData.append("address", form.address);
+
+      if (form.avatar) {
+        formData.append("avatar", form.avatar);
+      }
+
+      const res = await fetch("https://web-pgb0.onrender.com/register", {
+        method: "POST",
+        body: formData, // ❗ KHÔNG set Content-Type
+      });
+
+      const data = await res.json();
+      console.log("RAW:", data);
+
+      if (!res.ok) {
+        alert(data.message || "Đăng ký thất bại");
+        return;
+      }
+
+      console.log("Register success:", data);
+
+      alert("Đăng ký thành công!");
+
+      // 👉 chuyển sang login
+      router.push("/auth/login");
+
+    } catch (error) {
+      console.error(error);
+      alert("Lỗi kết nối server");
+    }
   };
 
    return(
@@ -154,12 +191,12 @@ export default function RegisterPage(){
             <div className={styles.inputGroup}>
                 <label>Xác nhận mật khẩu *</label>
                 <input
-                name="confirmPassword"
+                name="password_confirmation"
                 type="password"
                 onChange={handleChange}
                 />
-                {errors.confirmPassword && (
-                    <span className={styles.error}>{errors.confirmPassword}</span>
+                {errors.password_confirmation && (
+                    <span className={styles.error}>{errors.password_confirmation}</span>
                 )}
             </div>
 

@@ -12,12 +12,13 @@ export default function Navbar({ user }: { user: User }) {
     <nav className={styles.navbar}>
 
       <div className={styles.logo}>
-        <img src="/logo.png" alt="HobbyJapan Logo" />
+        <img src="/logo3.png" alt="HobbyJapan Logo" />
+        <p>GunVerse</p>
       </div>
 
       <div className={styles.menu}>
 
-        <a href="#" className={styles.menuItem}>
+        <a href="/social" className={styles.menuItem}>
           <img src="/icons/home.png" className={styles.menuIcon}/>
           <span className={styles.menuText}>Trang chủ</span>
         </a>
@@ -27,7 +28,7 @@ export default function Navbar({ user }: { user: User }) {
           <span className={styles.menuText}>Mua hàng</span>
         </a>
 
-        <a href="#" className={styles.menuItem}>
+        <a href="/profile" className={styles.menuItem}>
           <img src="/icons/profile.png" className={styles.menuIcon}/>
           <span className={styles.menuText}>Trang cá nhân</span>
         </a>

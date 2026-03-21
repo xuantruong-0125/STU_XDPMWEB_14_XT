@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Genos:wght@200;400;600&family=Manjari:wght@100;400;700&family=Manrope:wght@200;400;600&display=swap');
 .container{
-  background:#323232;
+  /* background:#323232; */
   min-height:100vh;
   /* padding:40px 20px; */
   display:flex;
@@ -31,10 +31,11 @@
 }
 
 .card{
-  background:#cbcbcb;
+  background:#070707;
   border-radius:14px;
   overflow:visible;
   border:2px solid #959595;
+  color: #ddd;
 }
 
 /* HEADER */
@@ -53,7 +54,7 @@
 }
 
 .username{
-  color:rgb(43, 43, 43);
+  color:rgb(255, 255, 255);
   font-weight:600;
 }
 
@@ -77,7 +78,7 @@
   align-items:center;
   gap:3px;
   font-weight: bold;
-  color:#171616;
+  color:#dcdcdc;
   font-size:14px;
   transition:0.2s;
 }
@@ -94,6 +95,7 @@
 
 .meta{
   padding:0 12px 12px 12px;
+  color: #ddd;
 }
 
 .likes{
@@ -103,7 +105,7 @@
 }
 
 .caption{
-  color:rgb(43, 43, 43);
+  color:rgb(255, 255, 255);
   font-size:14px;
 }
 
@@ -137,7 +139,7 @@
   position:absolute;
   top:28px;
   right:0;
-  background:#666666;
+  background:#0f0f0f;
   border-radius:8px;
   width:180px;
   z-index:10;
@@ -148,7 +150,7 @@
   top:100%;
   left:50%;       
   margin-left:6px;  
-  background:#666666;
+  background:#0f0f0f;
   border-radius:8px;
   width:160px;
   z-index:20;

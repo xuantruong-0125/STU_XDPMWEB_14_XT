@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import styles from "./login.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Logo from "@/app/components/logo";
 
 export default function LoginPage() {
@@ -11,11 +11,18 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const [errors,setErrors] = useState({
     email:"",
     password:""
   });
+
+    useEffect(() => {
+    fetch("https://web-pgb0.onrender.com")
+      .catch(() => {});
+  }, []);
+  
 
   const validate = () => {
 
@@ -41,17 +48,60 @@ export default function LoginPage() {
     return isValid;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if(!validate()){
-      return;
-    }
+    if (!validate()) return;
 
-    console.log({
-      email,
-      password
-    });
+    try {
+      // const res = await fetch("https://gundamstoreapi-gpd3fxemg8d3cpdt.eastasia-01.azurewebsites.net/auth/login", {
+      const res = await fetch("https://web-pgb0.onrender.com/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      // const data = await res.json();
+      const text = await res.text();
+      console.log("RAW RESPONSE:", text);
+
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        data = { message: text };
+}
+
+      if (!res.ok) {
+        alert(data.message || "Đăng nhập thất bại");
+        return;
+      }
+
+      const token = data.data.token;
+      const role = data.data.user?.role;
+
+      if (!token || !role) {
+        alert("Thiếu thông tin đăng nhập");
+        return;
+      }
+
+      setLoading(true);
+      // 🔥 CHUYỂN HƯỚNG THEO ROLE + GỬI TOKEN
+      if (role === "admin") {
+        window.location.href = `https://gundam-fe.netlify.app?token=${token}`;
+      } else {
+        // window.location.href = `https://user-site.com?token=${token}`;
+        router.push("/social");
+
+      }
+
+    } catch (error) {
+      console.error(error);
+      alert("Lỗi kết nối server");
+    }
   };
 
   return (
@@ -102,7 +152,9 @@ export default function LoginPage() {
             )}
           </div>
 
-          <button type="submit">Đăng nhập</button>
+          <button type="submit" disabled={loading}>
+            {loading ? "Đang đăng nhập..." : "Đăng nhập"}
+          </button>
 
           <p>
             Chưa có tài khoản?
