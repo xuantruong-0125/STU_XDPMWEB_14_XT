@@ -138,14 +138,14 @@ export default function RegisterPage(){
         <div className={styles.leftPanel}>
 
         <img
-            src="/logo.png"
+            src="/logo5.png"
             alt="HobbyJapan figure"
             className={styles.heroImage}
           />
 
 
           <p className={styles.tagline}>
-            Tham gia <b>HobbyJapan</b> để khám phá thế giới Gundam, Figure và các bộ sưu tập độc đáo.
+            Tham gia <b>GunBuys & GunVerse</b> để khám phá thế giới Gundam, Figure và các bộ sưu tập độc đáo.
           </p>
 
         </div>
@@ -155,6 +155,7 @@ export default function RegisterPage(){
         <form className={styles.form} onSubmit={handleSubmit}>
 
           <h2>Đăng ký tài khoản</h2>
+          <div className={styles.line}></div>
 
           <div className={styles.formGrid}>
 
@@ -218,14 +219,14 @@ export default function RegisterPage(){
                 />
             </div>
 
-            <div className={`${styles.inputGroup} ${styles.fullWidth}`}>
+            {/* <div className={`${styles.inputGroup} ${styles.fullWidth}`}>
                 <label>Ảnh đại diện</label>
                 <input
                 type="file"
                 accept="image/*"
                 onChange={handleFile}
                 />
-            </div>
+            </div> */}
 
           </div>
 

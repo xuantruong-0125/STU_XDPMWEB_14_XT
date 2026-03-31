@@ -1,0 +1,178 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  display: flex;
+  width: 900px;
+  height: 550px;
+  background: rgb(32, 32, 32);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.left {
+  width: 50%;
+}
+
+.left img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.right {
+  flex: 1;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.userRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  /* border-bottom: 2px solid #9c9c9c; */
+  padding-bottom: 10px;
+  font-weight: bold;
+}
+
+.userRow {
+  display: flex;
+  justify-content: space-between; /* 👈 đẩy menu sang phải */
+  align-items: center;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.menuWrapper {
+  position: relative;
+}
+
+.moreIcon {
+  width: 20px;
+  cursor: pointer;
+}
+
+.menu{
+  position:absolute;
+  top:28px;
+  right:0;
+  background:#0f0f0f;
+  border-radius:8px;
+  width:180px;
+  z-index:10;
+}
+
+.subMenu{
+  position:absolute;
+  top:100%;
+  left:20%;       
+  margin-left:6px;  
+  background:#0f0f0f;
+  border-radius:8px;
+  width:150px;
+  z-index:20;
+}
+
+.menuItem{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:10px;
+  cursor:pointer;
+  border-radius:8px;
+  color:#ddd;
+  font-size:14px;
+  position:relative;   
+
+}
+
+.menuItem:hover{
+  background:#535252;
+}
+
+.menuIcon{
+  width:25px;
+  height:25px;
+}
+
+
+
+.menuItem:hover .subMenu{
+  display:block;
+}
+.avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.caption {
+  margin: 10px 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #414141;
+
+}
+
+
+.stats {
+  display: flex;
+  justify-content: space-around; /* hoặc space-between */
+  padding: 2px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #414141;
+}
+
+.statItem {
+  display: flex;
+  align-items: center;  /* 👈 căn giữa icon + text */
+  gap: 5px;
+  font-size: 14px;
+}
+
+.icon {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.stats img {
+  width: 30px;
+  margin-right: 5px;
+}
+
+
+
+.comments {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.commentItem {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.avatarSmall {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #fff;
+}
+
+.username {
+  font-weight: bold;
+}

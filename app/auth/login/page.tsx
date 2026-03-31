@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import LoginPage from "./LoginPage";
 
 export const metadata: Metadata = {
-  title: "HobbyJapan | Đăng nhập",
+  title: "GunBuys | Đăng nhập",
   description: "Trang đăng nhập hệ thống",
 };
 

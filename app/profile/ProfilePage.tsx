@@ -3,6 +3,12 @@
 import styles from "./profile.module.css";
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
+import { getMe } from "../utils/auth";
+import { getFollowers, getFollowing, updateUser } from "../utils/api";
+import { useUser } from "../context/UserContext";
+import PostCard from "../components/post/PostCard";
+import PostDetailModal from "../components/post/PostDetailModal";
+
 
 interface FollowUser {
     id: number;
@@ -12,22 +18,37 @@ interface FollowUser {
 
 interface Post {
     id: number;
-    content: string;
+    caption: string;
+    images: string[];
+    like_count: number;
+    comment_count: number;
+    share_count: number;
+    comments: {
+        id: number;
+        user: {
+            username: string;
+            avatar: string;
+        };
+        content: string;
+    }[];
+    user_id: number
 }
 
 interface User {
     id: number;
-    name: string;
+    username: string;
     email: string;
     avatar: string;
-    bio?: string;
+    phone: string;
+    address: string;
     followers: FollowUser[];
     following: FollowUser[];
     posts: Post[];
 
 }
 export default function ProfilePage() {
-    const [user, setUser] = useState<User | null>(null);
+    // const [user, setUser] = useState<User | null>(null);
+    const { user, setUser } = useUser();
     const [openModal, setOpenModal] = useState<"followers" | "following" | null>(null);
     const [openPostModal, setOpenPostModal] = useState(false);
     const [content, setContent] = useState("");
@@ -35,32 +56,104 @@ export default function ProfilePage() {
 
     const [openSelect, setOpenSelect] = useState(false);
     const [privacy, setPrivacy] = useState<"public" | "private">("public");
+
+    const [openEditModal, setOpenEditModal] = useState(false);
+
+    const [followers, setFollowers] = useState<FollowUser[]>([]);
+    const [following, setFollowing] = useState<FollowUser[]>([]);
+    const [loadingFollow, setLoadingFollow] = useState(false);
+
+    const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
     useEffect(() => {
-        // giả lập fetch API
+        if (user) {
+            setFormData({
+                name: user.username || "",
+                email: user.email || "",
+                phone: user.phone || "",
+                address: user.address || "",
+                avatar: user.avatar || "/default_avatar.png",
+            });
+        }
+    }, [user]);
+
+    const mockPosts: Post[] = [
+        {
+            id: 1,
+            caption: "Gundam mới build xong 🔥",
+            images: [
+                "/posts/gundam1.jpg",
+                "/posts/gundam2.jpg"
+            ],
+            like_count: 12,
+            comment_count: 3,
+            share_count: 2,
+            comments: [
+                {
+                    id: 1,
+                    user: {
+                        username: "userA",
+                        avatar: "/default_avatar.png"
+                    },
+                    content: "Đẹp quá bro!"
+                },
+                {
+                    id: 2,
+                    user: {
+                        username: "userB",
+                        avatar: "/default_avatar.png"
+                    },
+                    content: "Sơn màu xịn đấy"
+                }
+            ],
+            user_id: 23
+        },
+                {
+            id: 2,
+            caption: "Gundam mới build xong 🔥",
+            images: [
+                "/posts/gundam1.jpg",
+                "/posts/gundam2.jpg"
+            ],
+            like_count: 12,
+            comment_count: 3,
+            share_count: 2,
+            comments: [
+                {
+                    id: 1,
+                    user: {
+                        username: "userA",
+                        avatar: "/default_avatar.png"
+                    },
+                    content: "Đẹp quá bro!"
+                },
+                {
+                    id: 2,
+                    user: {
+                        username: "userB",
+                        avatar: "/default_avatar.png"
+                    },
+                    content: "Sơn màu xịn đấy"
+                }
+            ],
+            user_id: 23
+        }
+    ];
+
+    const [formData, setFormData] = useState({
+        name: user?.username || "",
+        email: user?.email || "",
+        phone: "",
+        address: "",
+        avatar: user?.avatar ?? "/default_avatar.png",
+    });
+
+    useEffect(() => {
         const fetchUser = async () => {
-            // sau này thay bằng API thật
-            const data: User = {
-                id: 1,
-                name: "Nguyễn Văn A",
-                email: "vana@gmail.com",
-                avatar: "https://i.pravatar.cc/150?img=3",
-                bio: "Lập trình viên yêu thích công nghệ 🚀",
+            const data = await getMe();
+            console.log("ME DATA:", data);
 
-                followers: [
-                    { id: 2, name: "An", avatar: "https://i.pravatar.cc/100?img=5" },
-                    { id: 3, name: "Bình", avatar: "https://i.pravatar.cc/100?img=6" },
-                ],
-
-                following: [
-                    { id: 4, name: "Cường", avatar: "https://i.pravatar.cc/100?img=7" },
-                    { id: 5, name: "Dũng", avatar: "https://i.pravatar.cc/100?img=8" },
-                ],
-                posts: [],
-
-
-            };
-
-            setUser(data);
+            setUser(data?.data?.user || data?.data);
         };
 
         fetchUser();
@@ -71,12 +164,7 @@ export default function ProfilePage() {
     return (
 
         <>
-            <Navbar
-                user={{
-                    name: user.name,
-                    avatar: user.avatar,
-                }}
-            />
+            <Navbar />
 
             <div className={styles.container}>
                 {/* PHẦN TRÊN */}
@@ -84,14 +172,14 @@ export default function ProfilePage() {
 
                     {/* Avatar */}
                     <div className={styles.avatarSection}>
-                        <img src={user.avatar} alt="avatar" className={styles.avatar} />
+                        <img src={user.avatar || "/default_avatar.png"} alt="avatar" className={styles.avatar} />
                     </div>
 
                     {/* Thông tin */}
                     <div className={styles.infoSection}>
 
                         {/* Hàng 1: Tên */}
-                        <h2 className={styles.name}>{user.name}</h2>
+                        <h2 className={styles.name}>{user.username}</h2>
 
                         {/* Hàng 2: Buttons */}
                         <div className={styles.actionRow}>
@@ -103,7 +191,10 @@ export default function ProfilePage() {
                                 Đăng bài
                             </button>
 
-                            <button className={styles.editBtn}>
+                            <button
+                                className={styles.editBtn}
+                                onClick={() => setOpenEditModal(true)}
+                            >
                                 <img src="/icons/edit1.png" className={styles.icon} />
                                 Chỉnh sửa hồ sơ
                             </button>
@@ -111,19 +202,46 @@ export default function ProfilePage() {
 
                         {/* Hàng 3: Follow */}
                         <div className={styles.followRow}>
-                            <span onClick={() => setOpenModal("followers")} className={styles.clickable}>
-                                <strong>{user.followers.length}</strong> Followers
+                            {/* <span onClick={() => setOpenModal("followers")} className={styles.clickable}>
+                                <strong>{user?.followers?.length || 0}</strong> Followers
                             </span>
 
                             <span onClick={() => setOpenModal("following")} className={styles.clickable}>
-                                <strong>{user.following.length}</strong> Following
+                                <strong>{user?.following?.length || 0}</strong> Following
+                            </span> */}
+
+                            <span
+                                onClick={async () => {
+                                    setOpenModal("followers");
+                                    setLoadingFollow(true);
+
+                                    const res = await getFollowers(user.id);
+                                    setFollowers(res.data || res); // tùy backend trả
+
+                                    setLoadingFollow(false);
+                                }}
+                                className={styles.clickable}
+                            >
+                                <strong>{followers.length}</strong> Followers
+                            </span>
+
+                            <span
+                                onClick={async () => {
+                                    setOpenModal("following");
+                                    setLoadingFollow(true);
+
+                                    const res = await getFollowing(user.id);
+                                    setFollowing(res.data || res);
+
+                                    setLoadingFollow(false);
+                                }}
+                                className={styles.clickable}
+                            >
+                                <strong>{following.length}</strong> Following
                             </span>
                         </div>
 
-                        {/* Hàng 4: Bio */}
-                        <p className={styles.bio}>
-                            {user.bio ? user.bio : "Chưa có tiểu sử"}
-                        </p>
+
 
                     </div>
                 </div>
@@ -132,7 +250,7 @@ export default function ProfilePage() {
                 <div className={styles.postSection}>
                     <h3>Bài viết</h3>
 
-                    {user.posts && user.posts.length > 0 ? (
+                    {/* {user.posts && user.posts.length > 0 ? (
                         user.posts.map((post) => (
                             <div key={post.id} className={styles.postCard}>
                                 {post.content}
@@ -140,7 +258,22 @@ export default function ProfilePage() {
                         ))
                     ) : (
                         <p className={styles.noPost}>Chưa có bài viết</p>
-                    )}
+                    )} */}
+                    <div className={styles.postGrid}>
+                        {mockPosts.length > 0 ? (
+                            
+                            mockPosts.map((post) => (
+                                
+                                <PostCard
+                                    key={post.id}
+                                    post={post}
+                                    onClick={() => setSelectedPost(post)}
+                                />
+                            ))
+                        ) : (
+                            <p className={styles.noPost}>Chưa có bài viết</p>
+                        )}
+                    </div>
                 </div>
             </div>
 
@@ -155,15 +288,20 @@ export default function ProfilePage() {
                         </h3>
 
                         <div className={styles.userList}>
-                            {(openModal === "followers" ? user.followers : user.following).length > 0 ? (
-                                (openModal === "followers" ? user.followers : user.following).map((u) => (
+                            {loadingFollow ? (
+                                <p>Đang tải...</p>
+                            ) : (openModal === "followers" ? followers : following).length > 0 ? (
+                                (openModal === "followers" ? followers : following).map((u) => (
                                     <div key={u.id} className={styles.userItem}>
-                                        <img src={u.avatar} className={styles.smallAvatar} />
+                                        <img
+                                            src={u.avatar || "/default_avatar.png"}
+                                            className={styles.smallAvatar}
+                                        />
                                         <span>{u.name}</span>
                                     </div>
                                 ))
                             ) : (
-                                <p>Không có dữ liệu</p>
+                                <p>Chưa có</p>
                             )}
                         </div>
                     </div>
@@ -184,22 +322,8 @@ export default function ProfilePage() {
 
                         {/* User + Privacy */}
                         <div className={styles.postHeader}>
-                            <img src={user.avatar} className={styles.smallAvatar} />
+                            <img src={user.avatar || "/default_avatar.png"} className={styles.smallAvatar} />
 
-                            {/* <select
-                                value={privacy}
-                                onChange={(e) => setPrivacy(e.target.value)}
-                                className={styles.select}
-                            >
-                                <option value="public">
-
-                                    Công khai
-                                </option>
-                                <option value="private">
-
-                                    Riêng tư
-                                </option>
-                            </select> */}
 
                             <div className={styles.selectWrapper}>
                                 {/* Selected */}
@@ -258,14 +382,6 @@ export default function ProfilePage() {
                         />
 
                         {/* Upload ảnh */}
-                        {/* <input
-                            className={styles.postimg}
-                            type="file"
-                            multiple
-                            onChange={(e) =>
-                                setImages(Array.from(e.target.files || []))
-                            }
-                        /> */}
 
                         <label className={styles.uploadBtn}>
                             <img src="/icons/image.png" className={styles.icon} />
@@ -291,12 +407,190 @@ export default function ProfilePage() {
                             ))}
                         </div>
 
+                        <div className={styles.line}></div>
+
+
                         {/* Button */}
                         <button className={styles.submitBtn}>
                             Đăng
                         </button>
                     </div>
                 </div>
+            )}
+
+            {openEditModal && (
+                <div
+                    className={styles.modalOverlay}
+                    onClick={() => setOpenEditModal(false)}
+                >
+                    <div
+                        className={styles.editModal}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <h3 className={styles.modalTitle}>Chỉnh sửa hồ sơ</h3>
+
+                        {/* Avatar */}
+                        <div className={styles.avatarEdit}>
+                            <img
+                                src={formData.avatar || "/default_avatar.png"}
+                                className={styles.avatarLarge}
+                            />
+
+                            <label className={styles.uploadBtn}>
+                                Đổi ảnh
+
+                                <input
+                                    type="file"
+                                    className={styles.hiddenInput}
+                                    onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) {
+                                            setFormData({
+                                                ...formData,
+                                                avatar: URL.createObjectURL(file),
+                                            });
+                                        }
+                                    }}
+                                />
+                            </label>
+                        </div>
+
+                        {/* Input fields */}
+                        {/* Row 1: username + email */}
+                        <div className={styles.row}>
+                            <div className={styles.formGroup}>
+                                <label className={styles.label}>Tên người dùng</label>
+                                <input
+                                    className={styles.input}
+                                    value={formData.name}
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, name: e.target.value })
+                                    }
+                                />
+                            </div>
+
+                            <div className={styles.formGroup}>
+                                <label className={styles.label}>Email</label>
+                                <input
+                                    className={styles.input}
+                                    value={formData.email} disabled
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, email: e.target.value })
+                                    }
+                                />
+                            </div>
+                        </div>
+
+                        {/* Row 2: phone + address */}
+                        <div className={styles.row}>
+                            <div className={styles.formGroup}>
+                                <label className={styles.label}>Số điện thoại</label>
+                                <input
+                                    className={styles.input}
+                                    value={formData.phone}
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, phone: e.target.value })
+                                    }
+                                />
+                            </div>
+
+                            <div className={styles.formGroup}>
+                                <label className={styles.label}>Địa chỉ</label>
+                                <input
+                                    className={styles.input}
+                                    value={formData.address}
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, address: e.target.value })
+                                    }
+                                />
+                            </div>
+                        </div>
+
+                        <div className={styles.line}></div>
+
+                        {/* Button */}
+                        <button
+                            className={styles.submitBtn}
+
+                            // onClick={async () => {
+                            //     try {
+                            //         const form = new FormData();
+
+                            //         form.append("username", formData.name);
+                            //         form.append("email", formData.email);
+                            //         form.append("phone", formData.phone || "");
+                            //         form.append("address", formData.address || "");
+
+                            //         // nếu avatar là file (user vừa chọn)
+                            //         if (formData.avatar && formData.avatar.startsWith("blob:")) {
+                            //             const res = await fetch(formData.avatar);
+                            //             const blob = await res.blob();
+                            //             form.append("avatar", blob, "avatar.png");
+                            //         }
+
+                            //         const res = await updateUser(user!.id, form);
+
+                            //         // cập nhật lại UI
+                            //         const updatedUser = res.data || res;
+
+                            //         setUser({
+                            //             ...user!,
+                            //             username: updatedUser.username,
+                            //             email: updatedUser.email,
+                            //             avatar: updatedUser.avatar,
+                            //             phone: updatedUser.phone,
+                            //             address: updatedUser.address,
+                            //         });
+
+                            //         setOpenEditModal(false);
+                            //     } catch (err) {
+                            //         console.error("Update failed:", err);
+                            //     }
+                            // }}
+
+                            onClick={async () => {
+                                try {
+                                    const res = await updateUser(user!.id, {
+                                        username: formData.name,
+                                        email: formData.email,
+                                        phone: formData.phone || "",
+                                        address: formData.address || "",
+                                        // ❌ KHÔNG gửi avatar blob
+                                    });
+
+                                    console.log("API RESPONSE:", res);
+
+                                    const updatedUser = res.data || res;
+
+                                    setUser({
+                                        ...user!,
+                                        username: updatedUser.username,
+                                        email: updatedUser.email,
+                                        avatar: updatedUser.avatar,
+                                        phone: updatedUser.phone,
+                                        address: updatedUser.address,
+                                    });
+
+                                    setOpenEditModal(false);
+                                } catch (err) {
+                                    console.error("Update failed:", err);
+                                }
+                            }}
+                        >
+                            Lưu thay đổi
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {selectedPost && (
+                <PostDetailModal
+                    post={selectedPost}
+                    currentUserId={user.id}
+                    currentUserAvatar={user.avatar}
+                    currentUsername={user.username}
+                    onClose={() => setSelectedPost(null)}
+                />
             )}
 
         </>

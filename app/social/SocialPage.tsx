@@ -114,7 +114,8 @@ export default function SocialPage() {
     };
     return (
         <div className={styles.container}>
-           <Navbar user={user}/>
+            <Navbar/>
+           
             <h1 className={styles.title}></h1>
 
             <div className={styles.feed}>

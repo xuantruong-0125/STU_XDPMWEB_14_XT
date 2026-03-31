@@ -172,3 +172,9 @@
   font-size:13px;
   margin-top:4px;
 }
+
+.line{
+    border: 1px solid #7c7c7c;
+    margin-bottom: 10px;
+    margin-top: -5;
+}

@@ -13,32 +13,32 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const [errors,setErrors] = useState({
-    email:"",
-    password:""
+  const [errors, setErrors] = useState({
+    email: "",
+    password: ""
   });
 
-    useEffect(() => {
+  useEffect(() => {
     fetch("https://web-pgb0.onrender.com")
-      .catch(() => {});
+      .catch(() => { });
   }, []);
-  
+
 
   const validate = () => {
 
     let newErrors = {
-      email:"",
-      password:""
+      email: "",
+      password: ""
     };
 
     let isValid = true;
 
-    if(!email.trim()){
+    if (!email.trim()) {
       newErrors.email = "Vui lòng nhập email";
       isValid = false;
     }
 
-    if(!password.trim()){
+    if (!password.trim()) {
       newErrors.password = "Vui lòng nhập mật khẩu";
       isValid = false;
     }
@@ -73,15 +73,30 @@ export default function LoginPage() {
         data = JSON.parse(text);
       } catch {
         data = { message: text };
-}
+      }
 
       if (!res.ok) {
-        alert(data.message || "Đăng nhập thất bại");
+        let newErrors = {
+          email: "",
+          password: ""
+        };
+
+        if (data.message === "Invalid email or password") {
+          newErrors.email = "Email hoặc mật khẩu không đúng";
+          newErrors.password = "Email hoặc mật khẩu không đúng";
+        } else {
+          newErrors.email = data.message || "Đăng nhập thất bại";
+        }
+
+        setErrors(newErrors);
         return;
       }
 
       const token = data.data.token;
       const role = data.data.user?.role;
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(data.data.user));
 
       if (!token || !role) {
         alert("Thiếu thông tin đăng nhập");
@@ -91,11 +106,13 @@ export default function LoginPage() {
       setLoading(true);
       // 🔥 CHUYỂN HƯỚNG THEO ROLE + GỬI TOKEN
       if (role === "admin") {
-        window.location.href = `https://gundam-fe.netlify.app?token=${token}`;
+        // router.push("/social");
+        window.location.href = `https://gundam-fe.netlify.app/admin?token=${token}`;
+
+
       } else {
         // window.location.href = `https://user-site.com?token=${token}`;
-        router.push("/social");
-
+        window.location.href = `https://gundam-fe.netlify.app?token=${token}`;
       }
 
     } catch (error) {
@@ -113,14 +130,15 @@ export default function LoginPage() {
         <div className={styles.leftPanel}>
 
           <img
-            src="/logo.png"
+            src="/logo5.png"
             alt="HobbyJapan figure"
             className={styles.heroImage}
           />
 
-          
+
+
           <p className={styles.tagline}>
-           <b>HobbyJapan</b> - Nơi dành cho những người đam mê mô hình, mua bán và chia sẻ.
+            <b>GunBuys & GunVerse</b> - Nơi dành cho những người đam mê mô hình, mua bán và chia sẻ.
           </p>
         </div>
         {/* RIGHT SIDE */}
@@ -128,12 +146,18 @@ export default function LoginPage() {
 
           <h2>Đăng nhập</h2>
 
+          <div className={styles.line}></div>
+
+
           <div className={styles.inputGroup}>
             <label>Email</label>
             <input
               type="email"
               value={email}
-              onChange={(e)=>setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setErrors(prev => ({ ...prev, email: "" }));
+              }}
             />
             {errors.email && (
               <span className={styles.error}>{errors.email}</span>
@@ -145,12 +169,16 @@ export default function LoginPage() {
             <input
               type="password"
               value={password}
-              onChange={(e)=>setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setErrors(prev => ({ ...prev, password: "" }));
+              }}
             />
             {errors.password && (
               <span className={styles.error}>{errors.password}</span>
             )}
           </div>
+
 
           <button type="submit" disabled={loading}>
             {loading ? "Đang đăng nhập..." : "Đăng nhập"}
@@ -158,7 +186,7 @@ export default function LoginPage() {
 
           <p>
             Chưa có tài khoản?
-            <span onClick={()=>router.push("/auth/register")}>
+            <span onClick={() => router.push("/auth/register")}>
               Đăng ký
             </span>
           </p>
