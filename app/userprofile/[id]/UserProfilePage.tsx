@@ -30,6 +30,7 @@ interface Post {
         content: string;
     }[];
     user_id: number;
+     status: "active" | "hidden";
 }
 
 interface User {
@@ -191,8 +192,8 @@ export default function UserProfilePage() {
                 </div>
             )}
 
-            {/* POST DETAIL */}
-            {selectedPost && (
+           
+            {/* {selectedPost && (
                 <PostDetailModal
                     post={selectedPost}
                     currentUserId={user.id}
@@ -200,7 +201,7 @@ export default function UserProfilePage() {
                     currentUsername={user.username}
                     onClose={() => setSelectedPost(null)}
                 />
-            )}
+            )} */}
         </>
     );
 }
