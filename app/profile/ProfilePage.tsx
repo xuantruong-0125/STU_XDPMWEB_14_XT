@@ -4,7 +4,7 @@ import styles from "./profile.module.css";
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { getMe } from "../utils/auth";
-import { getFollowers, getFollowing, updateUser } from "../utils/api";
+import { getFollowers, getFollowing, updateUser, createPost, getUserPosts } from "../utils/api";
 import { useUser } from "../context/UserContext";
 import PostCard from "../components/post/PostCard";
 import PostDetailModal from "../components/post/PostDetailModal";
@@ -32,6 +32,7 @@ interface Post {
         content: string;
     }[];
     user_id: number
+    status: "active" | "hidden";
 }
 
 interface User {
@@ -64,6 +65,10 @@ export default function ProfilePage() {
     const [loadingFollow, setLoadingFollow] = useState(false);
 
     const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+    const [avatarFile, setAvatarFile] = useState<File | null>(null);
+
+    const [posts, setPosts] = useState<Post[]>([]);
+    const [loadingPosts, setLoadingPosts] = useState(true);
 
     useEffect(() => {
         if (user) {
@@ -77,68 +82,39 @@ export default function ProfilePage() {
         }
     }, [user]);
 
-    const mockPosts: Post[] = [
-        {
-            id: 1,
-            caption: "Gundam mới build xong 🔥",
-            images: [
-                "/posts/gundam1.jpg",
-                "/posts/gundam2.jpg"
-            ],
-            like_count: 12,
-            comment_count: 3,
-            share_count: 2,
-            comments: [
-                {
-                    id: 1,
-                    user: {
-                        username: "userA",
-                        avatar: "/default_avatar.png"
-                    },
-                    content: "Đẹp quá bro!"
-                },
-                {
-                    id: 2,
-                    user: {
-                        username: "userB",
-                        avatar: "/default_avatar.png"
-                    },
-                    content: "Sơn màu xịn đấy"
-                }
-            ],
-            user_id: 23
-        },
-                {
-            id: 2,
-            caption: "Gundam mới build xong 🔥",
-            images: [
-                "/posts/gundam1.jpg",
-                "/posts/gundam2.jpg"
-            ],
-            like_count: 12,
-            comment_count: 3,
-            share_count: 2,
-            comments: [
-                {
-                    id: 1,
-                    user: {
-                        username: "userA",
-                        avatar: "/default_avatar.png"
-                    },
-                    content: "Đẹp quá bro!"
-                },
-                {
-                    id: 2,
-                    user: {
-                        username: "userB",
-                        avatar: "/default_avatar.png"
-                    },
-                    content: "Sơn màu xịn đấy"
-                }
-            ],
-            user_id: 23
+    useEffect(() => {
+        const handleClickOutside = () => setOpenSelect(false);
+        if (openSelect) {
+            document.addEventListener("click", handleClickOutside);
         }
-    ];
+        return () => {
+            document.removeEventListener("click", handleClickOutside);
+        };
+    }, [openSelect]);
+
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            if (!user?.id) return;
+
+            try {
+                setLoadingPosts(true);
+
+                const res = await getUserPosts(user.id);
+
+                console.log("POSTS:", res);
+
+                setPosts(res.data || res); // tùy backend trả
+
+            } catch (err) {
+                console.error("Fetch posts error:", err);
+            } finally {
+                setLoadingPosts(false);
+            }
+        };
+
+        fetchPosts();
+    }, [user?.id]);
 
     const [formData, setFormData] = useState({
         name: user?.username || "",
@@ -158,6 +134,67 @@ export default function ProfilePage() {
 
         fetchUser();
     }, []);
+
+
+    const handleCreatePost = async () => {
+        try {
+            const formData = new FormData();
+
+            formData.append("caption", content);
+
+            // 🔥 mapping đúng backend
+            formData.append(
+                "status",
+                privacy === "public" ? "active" : "hidden"
+            );
+
+            images.forEach((img) => {
+                formData.append("images[]", img);
+            });
+
+            const res = await createPost(formData);
+            // 🔥 thêm bài viết mới vào UI ngay
+            const newPost = res.data || res;
+            setPosts(prev => [newPost, ...prev]);
+
+
+            console.log("CREATE POST:", res);
+
+            // reset
+            setContent("");
+            setImages([]);
+            setOpenPostModal(false);
+
+            // reload user/posts
+            const data = await getMe();
+            setUser(data?.data?.user || data?.data);
+
+        } catch (err) {
+            console.error("Create post error:", err);
+        }
+    };
+
+    const handleDeletePost = (postId: number) => {
+        setPosts(prev => prev.filter(p => p.id !== postId));
+
+        setSelectedPost(prev =>
+            prev?.id === postId ? null : prev
+        );
+    };
+
+    const handleUpdatePost = (updatedPost: Post) => {
+        setPosts(prev =>
+            prev.map(p =>
+                p.id === updatedPost.id
+                    ? { ...p, ...updatedPost } // 🔥 merge
+                    : p
+            )
+        );
+
+        setSelectedPost(prev =>
+            prev ? { ...prev, ...updatedPost } : prev
+        );
+    };
 
     if (!user) return <div>Đang tải...</div>;
 
@@ -260,10 +297,15 @@ export default function ProfilePage() {
                         <p className={styles.noPost}>Chưa có bài viết</p>
                     )} */}
                     <div className={styles.postGrid}>
-                        {mockPosts.length > 0 ? (
-                            
-                            mockPosts.map((post) => (
-                                
+                        {/* {mockPosts.length > 0 ? ( */}
+                        {loadingPosts ? (
+                            <p>Đang tải bài viết...</p>
+                        ) : posts.length > 0 ? (
+
+                            // mockPosts.map((post) => (
+                            posts.map((post) => (
+
+
                                 <PostCard
                                     key={post.id}
                                     post={post}
@@ -324,53 +366,38 @@ export default function ProfilePage() {
                         <div className={styles.postHeader}>
                             <img src={user.avatar || "/default_avatar.png"} className={styles.smallAvatar} />
 
-
-                            <div className={styles.selectWrapper}>
-                                {/* Selected */}
-                                <div
-                                    className={styles.selectBox}
-                                    onClick={() => setOpenSelect(!openSelect)}
-                                >
-                                    <img
-                                        src={
-                                            privacy === "public"
-                                                ? "/icons/global.png"
-                                                : "/icons/private.png"
-                                        }
-                                        className={styles.icon}
+                            <div className={styles.privacyWrapper}>
+                                <label className={styles.radioOption}>
+                                    <input
+                                        type="radio"
+                                        name="privacy"
+                                        value="public"
+                                        checked={privacy === "public"}
+                                        onChange={() => setPrivacy("public")}
                                     />
-                                    <span>
-                                        {privacy === "public" ? "Công khai" : "Riêng tư"}
-                                    </span>
-                                </div>
 
-                                {/* Dropdown */}
-                                {openSelect && (
-                                    <div className={styles.dropdown}>
-                                        <div
-                                            className={styles.option}
-                                            onClick={() => {
-                                                setPrivacy("public");
-                                                setOpenSelect(false);
-                                            }}
-                                        >
-                                            <img src="/icons/global.png" className={styles.icon} />
-                                            Công khai
-                                        </div>
-
-                                        <div
-                                            className={styles.option}
-                                            onClick={() => {
-                                                setPrivacy("private");
-                                                setOpenSelect(false);
-                                            }}
-                                        >
-                                            <img src="/icons/private.png" className={styles.icon} />
-                                            Riêng tư
-                                        </div>
+                                    <div className={styles.radioContent}>
+                                        <img src="/icons/global.png" className={styles.icon} />
+                                        <span>Công khai</span>
                                     </div>
-                                )}
+                                </label>
+
+                                <label className={styles.radioOption}>
+                                    <input
+                                        type="radio"
+                                        name="privacy"
+                                        value="private"
+                                        checked={privacy === "private"}
+                                        onChange={() => setPrivacy("private")}
+                                    />
+
+                                    <div className={styles.radioContent}>
+                                        <img src="/icons/private.png" className={styles.icon} />
+                                        <span>Riêng tư</span>
+                                    </div>
+                                </label>
                             </div>
+
                         </div>
 
                         {/* Content */}
@@ -411,7 +438,7 @@ export default function ProfilePage() {
 
 
                         {/* Button */}
-                        <button className={styles.submitBtn}>
+                        <button className={styles.submitBtn} onClick={handleCreatePost}>
                             Đăng
                         </button>
                     </div>
@@ -445,12 +472,22 @@ export default function ProfilePage() {
                                     onChange={(e) => {
                                         const file = e.target.files?.[0];
                                         if (file) {
+                                            setAvatarFile(file); // giữ file thật
                                             setFormData({
                                                 ...formData,
-                                                avatar: URL.createObjectURL(file),
+                                                avatar: URL.createObjectURL(file), // chỉ để preview
                                             });
                                         }
                                     }}
+                                // onChange={(e) => {
+                                //     const file = e.target.files?.[0];
+                                //     if (file) {
+                                //         setFormData({
+                                //             ...formData,
+                                //             avatar: URL.createObjectURL(file),
+                                //         });
+                                //     }
+                                // }}
                                 />
                             </label>
                         </div>
@@ -511,54 +548,24 @@ export default function ProfilePage() {
                         {/* Button */}
                         <button
                             className={styles.submitBtn}
-
-                            // onClick={async () => {
-                            //     try {
-                            //         const form = new FormData();
-
-                            //         form.append("username", formData.name);
-                            //         form.append("email", formData.email);
-                            //         form.append("phone", formData.phone || "");
-                            //         form.append("address", formData.address || "");
-
-                            //         // nếu avatar là file (user vừa chọn)
-                            //         if (formData.avatar && formData.avatar.startsWith("blob:")) {
-                            //             const res = await fetch(formData.avatar);
-                            //             const blob = await res.blob();
-                            //             form.append("avatar", blob, "avatar.png");
-                            //         }
-
-                            //         const res = await updateUser(user!.id, form);
-
-                            //         // cập nhật lại UI
-                            //         const updatedUser = res.data || res;
-
-                            //         setUser({
-                            //             ...user!,
-                            //             username: updatedUser.username,
-                            //             email: updatedUser.email,
-                            //             avatar: updatedUser.avatar,
-                            //             phone: updatedUser.phone,
-                            //             address: updatedUser.address,
-                            //         });
-
-                            //         setOpenEditModal(false);
-                            //     } catch (err) {
-                            //         console.error("Update failed:", err);
-                            //     }
-                            // }}
-
                             onClick={async () => {
                                 try {
-                                    const res = await updateUser(user!.id, {
-                                        username: formData.name,
-                                        email: formData.email,
-                                        phone: formData.phone || "",
-                                        address: formData.address || "",
-                                        // ❌ KHÔNG gửi avatar blob
-                                    });
+                                    const form = new FormData();
 
-                                    console.log("API RESPONSE:", res);
+                                    form.append("username", formData.name);
+                                    form.append("email", formData.email);
+                                    form.append("phone", formData.phone || "");
+                                    form.append("address", formData.address || "");
+
+                                    // thêm avatar nếu có chọn
+                                    if (avatarFile) {
+                                        form.append("avatar", avatarFile);
+                                    }
+
+                                    // nếu Laravel dùng PATCH
+                                    form.append("_method", "PATCH");
+
+                                    const res = await updateUser(user!.id, form);
 
                                     const updatedUser = res.data || res;
 
@@ -576,6 +583,71 @@ export default function ProfilePage() {
                                     console.error("Update failed:", err);
                                 }
                             }}
+
+                        // onClick={async () => {
+                        //     try {
+                        //         const form = new FormData();
+
+                        //         form.append("username", formData.name);
+                        //         form.append("email", formData.email);
+                        //         form.append("phone", formData.phone || "");
+                        //         form.append("address", formData.address || "");
+
+                        //         // nếu avatar là file (user vừa chọn)
+                        //         if (formData.avatar && formData.avatar.startsWith("blob:")) {
+                        //             const res = await fetch(formData.avatar);
+                        //             const blob = await res.blob();
+                        //             form.append("avatar", blob, "avatar.png");
+                        //         }
+
+                        //         const res = await updateUser(user!.id, form);
+
+                        //         // cập nhật lại UI
+                        //         const updatedUser = res.data || res;
+
+                        //         setUser({
+                        //             ...user!,
+                        //             username: updatedUser.username,
+                        //             email: updatedUser.email,
+                        //             avatar: updatedUser.avatar,
+                        //             phone: updatedUser.phone,
+                        //             address: updatedUser.address,
+                        //         });
+
+                        //         setOpenEditModal(false);
+                        //     } catch (err) {
+                        //         console.error("Update failed:", err);
+                        //     }
+                        // }}
+
+                        // onClick={async () => {
+                        //     try {
+                        //         const res = await updateUser(user!.id, {
+                        //             username: formData.name,
+                        //             email: formData.email,
+                        //             phone: formData.phone || "",
+                        //             address: formData.address || "",
+                        //             // ❌ KHÔNG gửi avatar blob
+                        //         });
+
+                        //         console.log("API RESPONSE:", res);
+
+                        //         const updatedUser = res.data || res;
+
+                        //         setUser({
+                        //             ...user!,
+                        //             username: updatedUser.username,
+                        //             email: updatedUser.email,
+                        //             avatar: updatedUser.avatar,
+                        //             phone: updatedUser.phone,
+                        //             address: updatedUser.address,
+                        //         });
+
+                        //         setOpenEditModal(false);
+                        //     } catch (err) {
+                        //         console.error("Update failed:", err);
+                        //     }
+                        // }}
                         >
                             Lưu thay đổi
                         </button>
@@ -590,6 +662,8 @@ export default function ProfilePage() {
                     currentUserAvatar={user.avatar}
                     currentUsername={user.username}
                     onClose={() => setSelectedPost(null)}
+                    onUpdatePost={handleUpdatePost}
+                    onDeletePost={handleDeletePost}
                 />
             )}
 

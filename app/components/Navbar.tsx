@@ -27,7 +27,7 @@ export default function Navbar() {
           <span className={styles.menuText}>Trang chủ</span>
         </a>
 
-        <a href="#" className={styles.menuItem}>
+        <a href="https://gundam-fe.netlify.app/" className={styles.menuItem}>
           <img src="/icons/shop.png" className={styles.menuIcon}/>
           <span className={styles.menuText}>GunBuys</span>
         </a>

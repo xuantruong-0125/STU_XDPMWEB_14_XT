@@ -5,6 +5,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 100;
 }
 
 .modal {
@@ -52,6 +53,30 @@
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.userText {
+  display: flex;
+  flex-direction: column;
+}
+
+.username {
+  font-weight: bold;
+}
+
+/* 🔥 Privacy */
+.privacyStatus {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 2px;
+}
+
+.privacyIcon {
+  width: 14px;
+  height: 14px;
 }
 
 .menuWrapper {
@@ -175,4 +200,233 @@
 
 .username {
   font-weight: bold;
+}
+/* ///////// */
+
+/* Overlay POST CREATE */
+.modalOverlay2{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Manrope;
+  z-index: 1000;
+  overflow: visible;
+
+}
+
+/* Modal */
+.postModal {
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 12px;
+  width: 650px;
+  overflow: visible;
+}
+
+/* Title */
+.modalTitle {
+  text-align: center;
+  margin-bottom: 15px;
+  font-weight: bolder;
+  font-size: large;
+  border-bottom: 2px solid #7c7c7c;
+
+}
+
+/* Header */
+.postHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Avatar */
+.smallAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+/* Select */
+.select {
+  padding: 5px;
+  border-radius: 6px;
+}
+
+/* Textarea */
+.textarea {
+  width: 100%;
+  min-height: 100px;
+  margin: 15px 0;
+  padding: 8px;
+  font-size: large;
+  border-radius: 8px;
+  border: 1px solid #979797;
+}
+
+
+/* Preview */
+.preview {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.previewImg {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+/* Button */
+.submitBtn {
+  width: 100%;
+  padding: 4px;
+  background: #0070f3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  margin-top: 10px;
+  cursor: pointer;
+  font-family: Genos;
+  font-weight: bolder;
+  font-size: 23px;
+}
+
+.line {
+  margin-top: 7px;
+  border-bottom: 2px solid #7c7c7c;
+}
+
+.privacyWrapper {
+  display: flex;
+  gap: 10px;
+  margin-left: 10px;
+}
+
+.radioOption input {
+  display: none;
+}
+
+.radioOption {
+  cursor: pointer;
+}
+
+.radioContent {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid #979797;
+  border-radius: 8px;
+  background: rgb(39, 39, 39);
+}
+
+.radioContent img {
+  width: 18px;
+  height: 18px;
+}
+
+.radioContent:hover {
+  background: #434343;
+}
+
+.radioOption input:checked + .radioContent {
+  border: 1px solid #0070f3;
+  background: rgba(0, 112, 243, 0.2);
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.uploadBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: medium;
+  margin-bottom: 5px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid #979797;
+  width: 100%;
+}
+
+
+/* Overlay modal xóa*/
+.confirmOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+/* Box */
+.confirmBox {
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 12px;
+  width: 320px;
+  text-align: center;
+  font-family: Manrope;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Text */
+.confirmBox p {
+  font-size: 16px;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+/* Actions */
+.confirmActions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* Button chung */
+.confirmActions button {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+/* Nút Hủy */
+.confirmActions button:first-child {
+  background: #3a3a3a;
+  color: #fff;
+}
+
+.confirmActions button:first-child:hover {
+  background: #555;
+}
+
+/* Nút Xóa */
+.deleteBtn {
+  background: #e53935;
+  color: white;
+}
+
+.deleteBtn:hover {
+  background: #ff4d4f;
 }

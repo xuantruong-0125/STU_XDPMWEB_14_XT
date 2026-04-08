@@ -108,10 +108,8 @@ export default function LoginPage() {
       if (role === "admin") {
         // router.push("/social");
         window.location.href = `https://gundam-fe.netlify.app/admin?token=${token}`;
-
-
       } else {
-        // window.location.href = `https://user-site.com?token=${token}`;
+        // router.push("/social");
         window.location.href = `https://gundam-fe.netlify.app?token=${token}`;
       }
 

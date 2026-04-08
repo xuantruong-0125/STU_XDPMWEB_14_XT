@@ -26,13 +26,15 @@
 
 .stats {
   display: flex;
-  justify-content: space-around; /* hoặc space-between */
+  justify-content: space-around;
+  /* hoặc space-between */
   padding: 8px;
 }
 
 .statItem {
   display: flex;
-  align-items: center;  /* 👈 căn giữa icon + text */
+  align-items: center;
+  /* 👈 căn giữa icon + text */
   gap: 5px;
   font-size: 14px;
 }
@@ -41,4 +43,11 @@
   width: 16px;
   height: 16px;
   object-fit: contain;
+}
+
+@media (max-width: 768px) {
+
+  .card {
+    width: 200px;
+  }
 }
