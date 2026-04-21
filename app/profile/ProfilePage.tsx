@@ -4,22 +4,26 @@ import styles from "./profile.module.css";
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { getMe } from "../utils/auth";
-import { getFollowers, getFollowing, updateUser, createPost, getUserPosts } from "../utils/api";
+import { updateUser, createPost, getUserPosts } from "../utils/api";
 import { useUser } from "../context/UserContext";
 import PostCard from "../components/post/PostCard";
 import PostDetailModal from "../components/post/PostDetailModal";
-
-
+import { getImageUrl } from "../utils/url";
+import { toast } from "react-toastify";
 interface FollowUser {
     id: number;
     name: string;
-    avatar: string;
+    avatar_url?: string;
 }
 
 interface Post {
     id: number;
     caption: string;
-    images: string[];
+    images: {
+        image_url: string;
+        public_url: string;
+        is_thumbnail: boolean;
+    }[];
     like_count: number;
     comment_count: number;
     share_count: number;
@@ -39,6 +43,7 @@ interface User {
     id: number;
     username: string;
     email: string;
+    avatar_url?: string;
     avatar: string;
     phone: string;
     address: string;
@@ -78,6 +83,7 @@ export default function ProfilePage() {
                 phone: user.phone || "",
                 address: user.address || "",
                 avatar: user.avatar || "/default_avatar.png",
+                avatar_url: user.avatar_url
             });
         }
     }, [user]);
@@ -122,6 +128,7 @@ export default function ProfilePage() {
         phone: "",
         address: "",
         avatar: user?.avatar ?? "/default_avatar.png",
+        avatar_url: user?.avatar_url,
     });
 
     useEffect(() => {
@@ -135,42 +142,55 @@ export default function ProfilePage() {
         fetchUser();
     }, []);
 
-
     const handleCreatePost = async () => {
         try {
+
             const formData = new FormData();
 
             formData.append("caption", content);
 
-            // 🔥 mapping đúng backend
             formData.append(
                 "status",
-                privacy === "public" ? "active" : "hidden"
+                privacy === "public"
+                    ? "active"
+                    : "hidden"
             );
 
             images.forEach((img) => {
                 formData.append("images[]", img);
             });
 
-            const res = await createPost(formData);
-            // 🔥 thêm bài viết mới vào UI ngay
+            const res = await toast.promise(
+                createPost(formData),
+                {
+                    pending: "Đang đăng bài...",
+                    success: "Đăng bài thành công",
+                    error: "Đăng bài thất bại"
+                }
+            );
+
             const newPost = res.data || res;
-            setPosts(prev => [newPost, ...prev]);
 
+            if (!newPost?.id) {
+                throw new Error("Invalid post");
+            }
 
-            console.log("CREATE POST:", res);
+            setPosts(prev => [
+                newPost,
+                ...prev
+            ]);
 
-            // reset
             setContent("");
             setImages([]);
             setOpenPostModal(false);
 
-            // reload user/posts
             const data = await getMe();
-            setUser(data?.data?.user || data?.data);
+            setUser(
+                data?.data?.user || data?.data
+            );
 
         } catch (err) {
-            console.error("Create post error:", err);
+            console.error(err);
         }
     };
 
@@ -209,7 +229,10 @@ export default function ProfilePage() {
 
                     {/* Avatar */}
                     <div className={styles.avatarSection}>
-                        <img src={user.avatar || "/default_avatar.png"} alt="avatar" className={styles.avatar} />
+                        <img
+                            src={getImageUrl(user.avatar_url || user.avatar)}
+                            className={styles.avatar}
+                        />
                     </div>
 
                     {/* Thông tin */}
@@ -239,43 +262,27 @@ export default function ProfilePage() {
 
                         {/* Hàng 3: Follow */}
                         <div className={styles.followRow}>
-                            {/* <span onClick={() => setOpenModal("followers")} className={styles.clickable}>
-                                <strong>{user?.followers?.length || 0}</strong> Followers
-                            </span>
-
-                            <span onClick={() => setOpenModal("following")} className={styles.clickable}>
-                                <strong>{user?.following?.length || 0}</strong> Following
-                            </span> */}
 
                             <span
-                                onClick={async () => {
+                                onClick={() => {
+                                    setFollowers([]);
                                     setOpenModal("followers");
-                                    setLoadingFollow(true);
-
-                                    const res = await getFollowers(user.id);
-                                    setFollowers(res.data || res); // tùy backend trả
-
-                                    setLoadingFollow(false);
                                 }}
                                 className={styles.clickable}
                             >
-                                <strong>{followers.length}</strong> Followers
+                                <strong>0</strong> Followers
                             </span>
 
                             <span
-                                onClick={async () => {
+                                onClick={() => {
+                                    setFollowing([]);
                                     setOpenModal("following");
-                                    setLoadingFollow(true);
-
-                                    const res = await getFollowing(user.id);
-                                    setFollowing(res.data || res);
-
-                                    setLoadingFollow(false);
                                 }}
                                 className={styles.clickable}
                             >
-                                <strong>{following.length}</strong> Following
+                                <strong>0</strong> Following
                             </span>
+
                         </div>
 
 
@@ -303,15 +310,17 @@ export default function ProfilePage() {
                         ) : posts.length > 0 ? (
 
                             // mockPosts.map((post) => (
-                            posts.map((post) => (
+                            posts
+                                .filter(post => post?.id && post?.images)
+                                .map((post) => (
 
 
-                                <PostCard
-                                    key={post.id}
-                                    post={post}
-                                    onClick={() => setSelectedPost(post)}
-                                />
-                            ))
+                                    <PostCard
+                                        key={post.id}
+                                        post={post}
+                                        onClick={() => setSelectedPost(post)}
+                                    />
+                                ))
                         ) : (
                             <p className={styles.noPost}>Chưa có bài viết</p>
                         )}
@@ -336,7 +345,7 @@ export default function ProfilePage() {
                                 (openModal === "followers" ? followers : following).map((u) => (
                                     <div key={u.id} className={styles.userItem}>
                                         <img
-                                            src={u.avatar || "/default_avatar.png"}
+                                            src={getImageUrl(u.avatar_url) || "/default_avatar.png"}
                                             className={styles.smallAvatar}
                                         />
                                         <span>{u.name}</span>
@@ -364,7 +373,10 @@ export default function ProfilePage() {
 
                         {/* User + Privacy */}
                         <div className={styles.postHeader}>
-                            <img src={user.avatar || "/default_avatar.png"} className={styles.smallAvatar} />
+                            <img
+                                src={getImageUrl(user.avatar_url || user.avatar)}
+                                className={styles.smallAvatar}
+                            />
 
                             <div className={styles.privacyWrapper}>
                                 <label className={styles.radioOption}>
@@ -459,7 +471,7 @@ export default function ProfilePage() {
                         {/* Avatar */}
                         <div className={styles.avatarEdit}>
                             <img
-                                src={formData.avatar || "/default_avatar.png"}
+                                src={getImageUrl(formData.avatar) || "/default_avatar.png"}
                                 className={styles.avatarLarge}
                             />
 
@@ -565,7 +577,14 @@ export default function ProfilePage() {
                                     // nếu Laravel dùng PATCH
                                     form.append("_method", "PATCH");
 
-                                    const res = await updateUser(user!.id, form);
+                                    const res = await toast.promise(
+                                        updateUser(user!.id, form),
+                                        {
+                                            pending: "Đang cập nhật hồ sơ...",
+                                            success: "Cập nhật thành công",
+                                            error: "Cập nhật thất bại"
+                                        }
+                                    );
 
                                     const updatedUser = res.data || res;
 

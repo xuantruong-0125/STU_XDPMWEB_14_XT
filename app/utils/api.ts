@@ -43,7 +43,7 @@ export const getUserById = async (id: string | number) => {
         const token = localStorage.getItem("token");
         // const id = 3;
 
-        const res = await fetch(`https://web-pgb0.onrender.com//api/users/${id}`, {
+        const res = await fetch(`https://web-pgb0.onrender.com/users/${id}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -66,15 +66,26 @@ export const getUserById = async (id: string | number) => {
 export const createPost = async (data: FormData) => {
     const token = localStorage.getItem("token");
 
-    const res = await fetch("https://web-pgb0.onrender.com/posts", {
+    const res = await fetch(
+      "https://web-pgb0.onrender.com/posts",
+      {
         method: "POST",
         headers: {
-            Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
-        body: data, // dùng FormData để upload ảnh
-    });
+        body: data,
+      }
+    );
 
-    return res.json();
+    const result = await res.json();
+
+    console.log("CREATE POST RESPONSE:", result);
+
+    if (!res.ok) {
+       throw result; // quăng lỗi validation thật ra ngoài
+    }
+
+    return result;
 };
 
 export const getUserPosts = async (userId: number) => {

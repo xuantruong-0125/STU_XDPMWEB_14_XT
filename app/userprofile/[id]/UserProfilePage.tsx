@@ -17,7 +17,11 @@ interface FollowUser {
 interface Post {
     id: number;
     caption: string;
-    images: string[];
+    images: {
+        image_url: string;
+        public_url: string;
+        is_thumbnail: boolean;
+    }[];
     like_count: number;
     comment_count: number;
     share_count: number;
@@ -30,7 +34,7 @@ interface Post {
         content: string;
     }[];
     user_id: number;
-     status: "active" | "hidden";
+    status: "active" | "hidden";
 }
 
 interface User {
@@ -192,7 +196,7 @@ export default function UserProfilePage() {
                 </div>
             )}
 
-           
+
             {/* {selectedPost && (
                 <PostDetailModal
                     post={selectedPost}

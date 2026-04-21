@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Genos:wght@200;400;600&family=Manjari:wght@100;400;700&family=Manrope:wght@200;400;600&display=swap');
 .container{
-  /* background:#323232; */
+  background:#f8f8f8;
   min-height:100vh;
   /* padding:40px 20px; */
   display:flex;
@@ -17,7 +17,7 @@
 }
 
 .feed{
-  background: #252525;
+  background: #cfcfcf;
   padding: 30px;
   width:100%;
   max-width:800px;
@@ -27,11 +27,11 @@
   gap:10px;
   font-family: "Manrope", sans-serif;
   overflow:visible;
-
+  border: 1px solid #ffa600;
 }
 
 .card{
-  background:#070707;
+  background:#e8e8e8;
   border-radius:14px;
   overflow:visible;
   border:2px solid #959595;
@@ -45,6 +45,7 @@
   align-items:center;
   gap:10px;
   padding:12px;
+  color: #0f0f0f;
 }
 
 .avatar{
@@ -56,6 +57,7 @@
 .username{
   color:rgb(255, 255, 255);
   font-weight:600;
+  color: #0f0f0f;
 }
 
 /* IMAGE */
@@ -71,6 +73,7 @@
   display:flex;
   gap:25px;
   padding:10px 12px;
+  background: #e9e7e7;
 }
 
 .actionItem{
@@ -78,7 +81,7 @@
   align-items:center;
   gap:3px;
   font-weight: bold;
-  color:#dcdcdc;
+  color:#171717;
   font-size:14px;
   transition:0.2s;
 }
@@ -105,7 +108,7 @@
 }
 
 .caption{
-  color:rgb(255, 255, 255);
+  color:rgb(0, 0, 0);
   font-size:14px;
 }
 

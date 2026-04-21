@@ -2,7 +2,8 @@
 
 import styles from "./PostDetailModal.module.css";
 import { useState, useEffect } from "react";
-
+import { getImageUrl } from "@/app/utils/url";
+import { toast } from "react-toastify";
 
 interface Comment {
     id: number;
@@ -17,7 +18,13 @@ interface Post {
     id: number;
     user_id: number;
     caption: string;
-    images: string[];
+
+    images: {
+        image_url: string;
+        public_url: string;
+        is_thumbnail: boolean;
+    }[];
+
     like_count: number;
     comment_count: number;
     share_count: number;
@@ -70,46 +77,133 @@ export default function PostDetailModal({
         setOpenEditModal(true);
     };
 
+    // const handleDelete = async () => {
+    //     if (!postToDelete) return;
+
+    //     try {
+    //         const token = localStorage.getItem("token");
+
+    //         const res = await fetch(
+    //             `https://web-pgb0.onrender.com/posts/${postToDelete}`,
+    //             {
+    //                 method: "POST",
+    //                 headers: {
+    //                     Authorization: `Bearer ${token}`,
+    //                     "Content-Type": "application/json",
+    //                 },
+    //                 body: JSON.stringify({
+    //                     _method: "DELETE",
+    //                 }),
+    //             }
+    //         );
+
+    //         const data = await res.json();
+    //         console.log("DELETE:", data);
+
+    //         // cập nhật ui ở profile page
+    //         onDeletePost(post.id);
+
+    //         // đóng modal confirm
+    //         setShowDeleteConfirm(false);
+
+    //         // đóng modal chi tiết
+    //         onClose();
+
+    //         // reset state
+    //         setPostToDelete(null);
+
+    //     } catch (err) {
+    //         console.error("Delete failed:", err);
+    //     }
+    // };
+
     const handleDelete = async () => {
+
         if (!postToDelete) return;
 
         try {
-            const token = localStorage.getItem("token");
 
-            const res = await fetch(
-                `https://web-pgb0.onrender.com/posts/${postToDelete}`,
+            const token =
+                localStorage.getItem(
+                    "token"
+                );
+
+            const res = await toast.promise(
+
+                fetch(
+                    `https://web-pgb0.onrender.com/posts/${postToDelete}`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            Authorization:
+                                `Bearer ${token}`,
+
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            _method: "DELETE"
+                        })
+                    }
+                ),
+
                 {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        _method: "DELETE",
-                    }),
+                    pending:
+                        "Đang xóa bài viết...",
+
+                    success:
+                        "Xóa bài thành công",
+
+                    error:
+                        "Xóa bài thất bại"
                 }
+
             );
 
-            const data = await res.json();
-            console.log("DELETE:", data);
+            if (!res.ok) {
+                throw new Error(
+                    "Delete failed"
+                );
+            }
 
-            // cập nhật ui ở profile page
-            onDeletePost(post.id);
+            const data =
+                await res.json();
+
+            console.log(
+                "DELETE:",
+                data
+            );
+
+            // cập nhật UI profile
+            onDeletePost(
+                post.id
+            );
 
             // đóng modal confirm
-            setShowDeleteConfirm(false);
+            setShowDeleteConfirm(
+                false
+            );
 
-            // đóng modal chi tiết
+            // đóng modal detail
             onClose();
 
-            // reset state
-            setPostToDelete(null);
+            // reset
+            setPostToDelete(
+                null
+            );
 
         } catch (err) {
-            console.error("Delete failed:", err);
-        }
-    };
 
+            console.error(
+                "Delete failed:",
+                err
+            );
+
+        }
+
+    };
 
     const handleUpdatePost = async () => {
         try {
@@ -161,7 +255,9 @@ export default function PostDetailModal({
                     >
                         {/* LEFT */}
                         <div className={styles.left}>
-                            <img src={post.images?.[0]} />
+                            <img
+                                src={getImageUrl(post.images?.[0]?.public_url)}
+                            />
                         </div>
 
                         {/* RIGHT */}
@@ -175,7 +271,7 @@ export default function PostDetailModal({
 
                                 <div className={styles.userInfo}>
                                     <img
-                                        src={currentUserAvatar || "/default_avatar.png"}
+                                        src={getImageUrl(currentUserAvatar)}
                                         className={styles.avatar}
                                     />
 
@@ -217,6 +313,8 @@ export default function PostDetailModal({
                                                     <img src="/icons/edit.png" className={styles.menuIcon} />
                                                     Chỉnh sửa bài viết
                                                 </div>
+
+                                                <div className={styles.lined}></div>
 
                                                 <div
                                                     className={styles.menuItem}
@@ -264,7 +362,7 @@ export default function PostDetailModal({
                             <div className={styles.comments}>
                                 {post.comments?.map((c) => (
                                     <div key={c.id} className={styles.commentItem}>
-                                        <img src={c.user.avatar} className={styles.avatarSmall} />
+                                        <img src={getImageUrl(c.user.avatar)} className={styles.avatarSmall} />
                                         <div>
                                             <span className={styles.username}>{c.user.username}</span>
                                             <p>{c.content}</p>
@@ -358,11 +456,11 @@ export default function PostDetailModal({
 
                         {/* Preview */}
                         <div className={styles.preview}>
-                            {/* ảnh cũ */}
+
                             {post.images?.map((img, i) => (
                                 <img
-                                    key={`old-${i}`}
-                                    src={img}
+                                    key={i}
+                                    src={getImageUrl(img.public_url)}
                                     className={styles.previewImg}
                                 />
                             ))}

@@ -4,7 +4,7 @@
   justify-content:center;
   align-items:center;
   min-height:100vh;
-  background:#101010;
+  background:#f5f3f3;
 }
 
 .wrapper{
@@ -31,7 +31,7 @@
 .tagline{
   margin-top:20px;
   font-size:16px;
-  color:#ccc;
+  color:#000000 !important;
   line-height:1.6;
   font-family: "Manrope", sans-serif;
 
@@ -40,8 +40,8 @@
 .form{
   width:500px;
   padding:30px;
-  border:2px solid rgb(234,234,234);
-  background:rgb(46,46,46);
+  border:2px solid rgb(247, 131, 7);
+  background:rgb(243, 243, 243);
   border-radius:20px;
   display:flex;
   flex-direction:column;
@@ -117,6 +117,7 @@
   font-family: "Genos", sans-serif;
   font-size: x-large;
   font-weight: bolder;
+  color: #292929;
 }
 
 .form input{
@@ -128,21 +129,24 @@
   width:100%;
   padding:12px;
   max-width:100%;
+  color: #292929;
 
 }
 
 .form button{
   padding:10px;
+  margin-top: 5px;
   border:none;
-  border: 2px solid #ccc;
-  background:#867f7f;
-  color:white;
+  background:#b7b7b7;
+  color:rgb(255, 255, 255);
+  border: 2px solid #000000;
+  font-weight: bold;
   border-radius:6px;
   cursor:pointer;
-  font-weight: bold;
 }
+
 .form button:hover{
-  background: #f49898;
+  background: #ef8103;
 }
 
 .form span{
@@ -151,6 +155,7 @@
 }
 
 .form p{
+  color: #000000;
   text-align:center;
   margin-top:10px;
 }
@@ -171,11 +176,12 @@
   margin-bottom:5px;
   font-weight:500;
   font-weight: bold;
+  color: #292929;
 }
 
 .inputGroup input{
   padding:10px;
-  border:1px solid #ccc;
+  border:1px solid #323232;
   border-radius:6px;
 }
 

@@ -1,10 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Genos:wght@200;400;600&family=Manjari:wght@100;400;700&family=Manrope:wght@200;400;600&display=swap');
 
+body {
+  margin: 0;
+  font-family: Manrope;
+  background-color: #ffffff; /* hoặc màu bạn muốn */
+}
+
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   font-family: Manrope;
+  background-color: #ffffff;
 }
 
 /* ===== TOP SECTION ===== */
@@ -26,7 +34,7 @@
   height: 200px;
   border-radius: 50%;
   object-fit: cover;
-  background-color: #ffffff;
+  background-color: #aaaaaa;
 }
 
 /* Info */
@@ -35,6 +43,7 @@
   display: flex;
   flex-direction: column;
   gap: 18px;
+  color: #1e1e1e;
 }
 
 .name {
@@ -60,7 +69,7 @@
   font-family: Genos;
   font-size: 22px;
   font-weight: bold;
-  border: 2px solid #606060;
+  border: 2px solid #838383;
 }
 
 .icon {
@@ -68,12 +77,12 @@
 }
 
 .editBtn {
-  background-color: #272727;
-  color: rgb(255, 255, 255);
+  background-color: #c5c5c5;
+  color: rgb(33, 33, 33);
 }
 
 .postBtn {
-  background-color: #e86a6a;
+  background-color: #ff9539;
   color: white;
 }
 
@@ -101,8 +110,13 @@
   /* khoảng cách giữa các card */
 }
 
+.postGrid p{
+  color: #1e1e1e;
+}
+
 .postSection h3 {
   margin-top: 15px;
+  color: #1e1e1e;
 }
 
 .postCard {
@@ -206,7 +220,7 @@
 
 /* Modal */
 .modal {
-  background: #1e1e1e;
+  background: #ffffff;
   padding: 20px;
   border-radius: 12px;
   width: 300px;
@@ -219,11 +233,13 @@
 .modal h3 {
   font-weight: bold;
   border-bottom: 1px solid #393939;
+  color: #1e1e1e;
 }
 
 /* List */
 .userList {
   margin-top: 10px;
+  color: #1e1e1e;
 }
 
 /* Item */
@@ -264,7 +280,7 @@
 
 /* Modal */
 .postModal {
-  background: #1e1e1e;
+  background: #ebebeb;
   padding: 20px;
   border-radius: 12px;
   width: 650px;
@@ -292,6 +308,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  background-color: #d55c00;
 }
 
 /* Select */
@@ -308,7 +325,8 @@
   padding: 8px;
   font-size: large;
   border-radius: 8px;
-  border: 1px solid #979797;
+  border: 1px solid #3a3a3a;
+  color: #1e1e1e;
 }
 
 
@@ -367,7 +385,8 @@
   padding: 6px 12px;
   border: 1px solid #979797;
   border-radius: 8px;
-  background: rgb(39, 39, 39);
+  background: rgb(193, 193, 193);
+  color: #1e1e1e;
 
 }
 
@@ -379,13 +398,12 @@
 
 /* Hover */
 .radioContent:hover {
-  background: #434343;
+  background: #f9a55b;
 }
 
 /* Checked state */
 .radioOption input:checked+.radioContent {
-  border: 1px solid #0070f3;
-  background: rgba(0, 112, 243, 0.2);
+  background: #f9a55b;
 }
 
 .hiddenInput {
@@ -401,23 +419,26 @@
   padding: 8px 12px;
   border-radius: 8px;
   cursor: pointer;
-  border: 1px solid #979797;
+  border: 1px solid #3a3a3a;
   width: 100%;
+  color: #1e1e1e;
 }
 
 /* //////////// edit  */
 
 /* Modal */
 .editModal {
-  background: rgb(40, 40, 40);
+  background: rgb(227, 227, 227);
   padding: 20px;
   border-radius: 12px;
   width: 400px;
   font-family: Manrope;
   max-height: 90vh;
-  /* ✅ không vượt màn hình */
   overflow-y: auto;
+}
 
+.modalTitle{
+  color: #1e1e1e;
 }
 
 /* Avatar edit */
@@ -427,6 +448,7 @@
   align-items: center;
   gap: 10px;
   margin-bottom: 15px;
+  color: #393939;
 }
 
 .avatarLarge {
@@ -436,7 +458,7 @@
   object-fit: cover;
   justify-content: center;
   align-items: center;
-  background-color: #ddd;
+  background-color: #f26f03;
 }
 
 /* Input */
@@ -445,7 +467,8 @@
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid #1b1b1b;
+  color: #393939;
 }
 
 .line {
@@ -481,10 +504,11 @@
   font-size: 14px;
   margin-bottom: 4px;
   font-weight: bolder;
+  color: #1e1e1e;
 }
 
 .input {
   padding: 8px;
   border-radius: 6px;
-  border: 1px solid #ccc;
+  border: 1px solid #2d2d2d;
 }

@@ -9,6 +9,7 @@ interface User {
   username: string;
   email: string;
   avatar: string;
+  avatar_url?:string;
   phone: string;
   address: string;
   posts: any[]; // hoặc Post[] nếu bạn import type

@@ -1,12 +1,16 @@
 "use client";
 
 import styles from "./PostCard.module.css";
-
+import { getImageUrl } from "@/app/utils/url";
 interface Post {
     id: number;
     user_id: number;
     caption: string;
-    images: string[];
+    images: {
+        image_url: string;
+        public_url: string;
+        is_thumbnail: boolean;
+    }[];
     like_count: number;
     comment_count: number;
     share_count: number;
@@ -22,7 +26,7 @@ export default function PostCard({ post, onClick }: Props) {
         <div className={styles.card} onClick={onClick}>
             {/* ảnh */}
             <img
-                src={post.images[0] || "/default_post.png"}
+                src={getImageUrl(post.images?.[0]?.image_url)}
                 className={styles.image}
             />
 

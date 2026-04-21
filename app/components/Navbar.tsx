@@ -2,6 +2,7 @@
 
 import styles from "./navbar.module.css";
 import { useUser } from "../context/UserContext";
+import { getImageUrl } from "../utils/url";
 
 type User = {
   username: string;
@@ -41,7 +42,7 @@ export default function Navbar() {
 
       <div className={styles.user}>
         <img
-          src={user?.avatar || "/default_avatar.png"}
+          src={getImageUrl(user?.avatar_url)|| "/default_avatar.png"}
           className={styles.avatar}
         />
         <span className={styles.username}>

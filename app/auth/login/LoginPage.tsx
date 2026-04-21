@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import styles from "./login.module.css";
-import { useState, useEffect } from "react";
-import Logo from "@/app/components/logo";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function LoginPage() {
 
@@ -18,10 +18,10 @@ export default function LoginPage() {
     password: ""
   });
 
-  useEffect(() => {
-    fetch("https://web-pgb0.onrender.com")
-      .catch(() => { });
-  }, []);
+  // useEffect(() => {
+  //   fetch("https://web-pgb0.onrender.com")
+  //     .catch(() => { });
+  // }, []);
 
 
   const validate = () => {
@@ -48,75 +48,250 @@ export default function LoginPage() {
     return isValid;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+
+  //   if (!validate()) {
+  //     toast.warning(
+  //       "Vui lòng nhập email và mật khẩu"
+  //     );
+  //     return;
+  //   }
+
+  //   try {
+  //     const res = await fetch("https://web-pgb0.onrender.com/login", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Accept: "application/json",
+  //       },
+  //       body: JSON.stringify({ email, password }),
+  //     });
+
+  //     // const data = await res.json();
+  //     const text = await res.text();
+  //     console.log("RAW RESPONSE:", text);
+
+  //     let data;
+  //     try {
+  //       data = JSON.parse(text);
+  //     } catch {
+  //       data = { message: text };
+  //     }
+
+  //     if (!res.ok) {
+  //       let newErrors = {
+  //         email: "",
+  //         password: ""
+  //       };
+
+  //       if (data.message === "Invalid email or password") {
+  //         newErrors.email = "Email hoặc mật khẩu không đúng";
+  //         newErrors.password = "Email hoặc mật khẩu không đúng";
+  //       } else {
+  //         newErrors.email = data.message || "Đăng nhập thất bại";
+  //       }
+
+  //       setErrors(newErrors);
+  //       return;
+  //     }
+
+  //     const token = data.data.token;
+  //     const role = data.data.user?.role;
+
+  //     localStorage.setItem("token", token);
+  //     localStorage.setItem("user", JSON.stringify(data.data.user));
+
+  //     if (!token || !role) {
+  //       alert("Thiếu thông tin đăng nhập");
+  //       return;
+  //     }
+
+  //     setLoading(true);
+  //     // 🔥 CHUYỂN HƯỚNG THEO ROLE + GỬI TOKEN
+  //     if (role === "admin") {
+  //       // router.push("/social");
+  //       window.location.href = `https://gundam-fe.netlify.app/admin?token=${token}`;
+  //     } else {
+  //       router.push("/social");
+  //       // window.location.href = `https://gundam-fe.netlify.app?token=${token}`;
+  //     }
+
+  //   } catch (error) {
+  //     console.error(error);
+  //     alert("Lỗi kết nối server");
+  //   }
+  // };
+
+  const handleSubmit = async (
+    e: React.FormEvent
+  ) => {
+
     e.preventDefault();
 
-    if (!validate()) return;
+    if (!validate()) {
+      toast.warning(
+        "Vui lòng nhập email và mật khẩu"
+      );
+      return;
+    }
 
     try {
-      // const res = await fetch("https://gundamstoreapi-gpd3fxemg8d3cpdt.eastasia-01.azurewebsites.net/auth/login", {
-      const res = await fetch("https://web-pgb0.onrender.com/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
 
-      // const data = await res.json();
-      const text = await res.text();
-      console.log("RAW RESPONSE:", text);
+      setLoading(true);
+
+      const res = await toast.promise(
+
+        (async () => {
+
+          const response =
+            await fetch(
+              "https://web-pgb0.onrender.com/login",
+              {
+                method: "POST",
+
+                headers: {
+                  "Content-Type":
+                    "application/json",
+
+                  Accept:
+                    "application/json"
+                },
+
+                body: JSON.stringify({
+                  email,
+                  password
+                })
+              }
+            );
+
+          if (!response.ok) {
+            throw new Error(
+              "Invalid email or password"
+            );
+          }
+
+          return response;
+
+        })(),
+
+        {
+          pending:
+            "Đang đăng nhập...",
+
+          success:
+            "Đăng nhập thành công",
+
+          error:
+            "Email hoặc mật khẩu không đúng"
+        }
+      );
+
+      const text =
+        await res.text();
 
       let data;
+
       try {
         data = JSON.parse(text);
-      } catch {
+      }
+      catch {
         data = { message: text };
       }
 
       if (!res.ok) {
+
         let newErrors = {
           email: "",
           password: ""
         };
 
-        if (data.message === "Invalid email or password") {
-          newErrors.email = "Email hoặc mật khẩu không đúng";
-          newErrors.password = "Email hoặc mật khẩu không đúng";
+        if (
+          data.message ===
+          "Invalid email or password"
+        ) {
+
+          toast.error(
+            "Email hoặc mật khẩu không đúng"
+          );
+
+          newErrors.email =
+            "Email hoặc mật khẩu không đúng";
+
+          newErrors.password =
+            "Email hoặc mật khẩu không đúng";
+
         } else {
-          newErrors.email = data.message || "Đăng nhập thất bại";
+
+          toast.error(
+            data.message ||
+            "Đăng nhập thất bại"
+          );
+
+          newErrors.email =
+            data.message;
         }
 
-        setErrors(newErrors);
+        setErrors(
+          newErrors
+        );
+
+        setLoading(false);
+
         return;
       }
 
-      const token = data.data.token;
-      const role = data.data.user?.role;
+      const token =
+        data.data.token;
 
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(data.data.user));
+      const role =
+        data.data.user?.role;
 
-      if (!token || !role) {
-        alert("Thiếu thông tin đăng nhập");
+      localStorage.setItem(
+        "token",
+        token
+      );
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(
+          data.data.user
+        )
+      );
+
+      if (
+        !token || !role
+      ) {
+        toast.error(
+          "Thiếu thông tin đăng nhập"
+        );
+
+        setLoading(false);
         return;
       }
 
-      setLoading(true);
-      // 🔥 CHUYỂN HƯỚNG THEO ROLE + GỬI TOKEN
       if (role === "admin") {
-        // router.push("/social");
-        window.location.href = `https://gundam-fe.netlify.app/admin?token=${token}`;
+        window.location.href =`https://gundam-fe.netlify.app/admin?token=${token}`;
       } else {
         // router.push("/social");
         window.location.href = `https://gundam-fe.netlify.app?token=${token}`;
+
       }
 
     } catch (error) {
-      console.error(error);
-      alert("Lỗi kết nối server");
+
+      console.error(
+        error
+      );
+
+      toast.error(
+        "Lỗi kết nối server"
+      );
+
+      setLoading(false);
+
     }
+
   };
 
   return (
