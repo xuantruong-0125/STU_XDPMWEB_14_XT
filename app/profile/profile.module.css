@@ -100,14 +100,10 @@ body {
 }
 
 .postGrid {
-  /* justify-content: center; */
   margin-top: 20px;
-
   display: flex;
   flex-wrap: wrap;
-  /* 👈 cho phép xuống dòng */
   gap: 15px;
-  /* khoảng cách giữa các card */
 }
 
 .postGrid p{

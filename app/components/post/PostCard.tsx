@@ -26,7 +26,7 @@ export default function PostCard({ post, onClick }: Props) {
         <div className={styles.card} onClick={onClick}>
             {/* ảnh */}
             <img
-                src={getImageUrl(post.images?.[0]?.image_url)}
+                src={getImageUrl(post.images?.[0]?.public_url || "")}
                 className={styles.image}
             />
 

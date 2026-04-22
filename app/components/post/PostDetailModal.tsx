@@ -59,10 +59,12 @@ export default function PostDetailModal({
     const [privacy, setPrivacy] = useState<"active" | "hidden">("active");
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [postToDelete, setPostToDelete] = useState<number | null>(null);
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     useEffect(() => {
         setContent(post.caption);
         setPrivacy(post.status);
+        setCurrentIndex(0);
     }, [post]);
 
     const toggleMenu = (id: number) => {
@@ -76,46 +78,6 @@ export default function PostDetailModal({
         setImages([]);
         setOpenEditModal(true);
     };
-
-    // const handleDelete = async () => {
-    //     if (!postToDelete) return;
-
-    //     try {
-    //         const token = localStorage.getItem("token");
-
-    //         const res = await fetch(
-    //             `https://web-pgb0.onrender.com/posts/${postToDelete}`,
-    //             {
-    //                 method: "POST",
-    //                 headers: {
-    //                     Authorization: `Bearer ${token}`,
-    //                     "Content-Type": "application/json",
-    //                 },
-    //                 body: JSON.stringify({
-    //                     _method: "DELETE",
-    //                 }),
-    //             }
-    //         );
-
-    //         const data = await res.json();
-    //         console.log("DELETE:", data);
-
-    //         // cập nhật ui ở profile page
-    //         onDeletePost(post.id);
-
-    //         // đóng modal confirm
-    //         setShowDeleteConfirm(false);
-
-    //         // đóng modal chi tiết
-    //         onClose();
-
-    //         // reset state
-    //         setPostToDelete(null);
-
-    //     } catch (err) {
-    //         console.error("Delete failed:", err);
-    //     }
-    // };
 
     const handleDelete = async () => {
 
@@ -245,6 +207,19 @@ export default function PostDetailModal({
         }
     };
 
+
+    const handlePrev = () => {
+        setCurrentIndex((prev) =>
+            prev === 0 ? post.images.length - 1 : prev - 1
+        );
+    };
+
+    const handleNext = () => {
+        setCurrentIndex((prev) =>
+            prev === post.images.length - 1 ? 0 : prev + 1
+        );
+    };
+
     return (
         <>
             {!openEditModal && (
@@ -256,8 +231,27 @@ export default function PostDetailModal({
                         {/* LEFT */}
                         <div className={styles.left}>
                             <img
-                                src={getImageUrl(post.images?.[0]?.public_url)}
+                                src={getImageUrl(post.images?.[currentIndex]?.public_url || "")}
                             />
+
+                            {post.images.length > 1 && (
+                                <>
+                                    <button
+                                        className={styles.prevBtn}
+                                        onClick={handlePrev}
+                                    >
+                                        ◀
+                                    </button>
+
+                                    <button
+                                        className={styles.nextBtn}
+                                        onClick={handleNext}
+                                    >
+                                        ▶
+                                    </button>
+                                </>
+                            )}
+
                         </div>
 
                         {/* RIGHT */}

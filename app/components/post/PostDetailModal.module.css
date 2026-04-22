@@ -20,13 +20,21 @@
 
 
 .left {
-  width: 50%;
+  width: 60%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: black;
 }
 
 .left img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
 }
 
 .right {
@@ -47,7 +55,8 @@
 
 .userRow {
   display: flex;
-  justify-content: space-between; /* 👈 đẩy menu sang phải */
+  justify-content: space-between;
+  /* 👈 đẩy menu sang phải */
   align-items: center;
 }
 
@@ -92,57 +101,58 @@
   cursor: pointer;
 }
 
-.menu{
-  position:absolute;
-  top:28px;
-  right:0;
-  background:#e8e8e8;
-  border-radius:8px;
-  width:180px;
-  z-index:10;
-  border:2px solid #666666; 
+.menu {
+  position: absolute;
+  top: 28px;
+  right: 0;
+  background: #e8e8e8;
+  border-radius: 8px;
+  width: 180px;
+  z-index: 10;
+  border: 2px solid #666666;
 }
 
-.subMenu{
-  position:absolute;
-  top:100%;
-  left:20%;       
-  margin-left:6px;  
-  background:#0f0f0f;
-  border-radius:8px;
-  width:150px;
-  z-index:20;
+.subMenu {
+  position: absolute;
+  top: 100%;
+  left: 20%;
+  margin-left: 6px;
+  background: #0f0f0f;
+  border-radius: 8px;
+  width: 150px;
+  z-index: 20;
 }
 
-.menuItem{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:10px;
-  cursor:pointer;
-  border-radius:8px;
-  color:#242424;
-  font-size:14px;
-  position:relative;   
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 8px;
+  color: #242424;
+  font-size: 14px;
+  position: relative;
 
 }
 
-.menuItem:hover{
-  background:#c9c9c9;
+.menuItem:hover {
+  background: #c9c9c9;
 }
 
-.menuIcon{
-  width:25px;
-  height:25px;
+.menuIcon {
+  width: 25px;
+  height: 25px;
 }
 
-.lined{
+.lined {
   border-bottom: 1px solid #9e9e9e;
 }
 
-.menuItem:hover .subMenu{
-  display:block;
+.menuItem:hover .subMenu {
+  display: block;
 }
+
 .avatar {
   width: 35px;
   height: 35px;
@@ -161,7 +171,8 @@
 
 .stats {
   display: flex;
-  justify-content: space-around; /* hoặc space-between */
+  justify-content: space-around;
+  /* hoặc space-between */
   padding: 2px;
   padding-bottom: 10px;
   margin-bottom: 10px;
@@ -170,7 +181,8 @@
 
 .statItem {
   display: flex;
-  align-items: center;  /* 👈 căn giữa icon + text */
+  align-items: center;
+  /* 👈 căn giữa icon + text */
   gap: 5px;
   font-size: 14px;
 }
@@ -209,6 +221,7 @@
 .username {
   font-weight: bold;
 }
+
 /* ///////// */
 .modalOverlay2 {
   position: fixed;
@@ -292,7 +305,7 @@
   border-radius: 6px;
 }
 
-.modalTitle{
+.modalTitle {
   color: #0f0f0f;
 }
 
@@ -399,7 +412,7 @@
   width: 320px;
   text-align: center;
   font-family: Manrope;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 6px 20px rgba(158, 158, 158, 0.734);
 }
 
 /* Text */
@@ -439,10 +452,35 @@
 
 /* Nút Xóa */
 .deleteBtn {
-  background: #e53935;
+  background: #c97c01;
   color: white;
 }
 
 .deleteBtn:hover {
-  background: #ff4d4f;
+  background: #ff9a17;
+}
+
+
+.prevBtn,
+.nextBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.4);
+  color: white;
+  border: none;
+  cursor: pointer;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  z-index: 2;
+  /* 👈 đảm bảo nằm trên ảnh */
+}
+
+.prevBtn {
+  left: 10px;
+}
+
+.nextBtn {
+  right: 10px;
 }

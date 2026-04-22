@@ -471,7 +471,7 @@ export default function ProfilePage() {
                         {/* Avatar */}
                         <div className={styles.avatarEdit}>
                             <img
-                                src={getImageUrl(formData.avatar) || "/default_avatar.png"}
+                                src={getImageUrl(formData.avatar_url) || "/default_avatar.png"}
                                 className={styles.avatarLarge}
                             />
 
@@ -678,7 +678,7 @@ export default function ProfilePage() {
                 <PostDetailModal
                     post={selectedPost}
                     currentUserId={user.id}
-                    currentUserAvatar={user.avatar}
+                    currentUserAvatar={user.avatar_url || user.avatar}
                     currentUsername={user.username}
                     onClose={() => setSelectedPost(null)}
                     onUpdatePost={handleUpdatePost}
